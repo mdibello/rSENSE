@@ -61,8 +61,7 @@
 
     td {
       padding: 3px 10px;
-      text-overflow: ellipsis;
-      overflow: hidden;
+      word-wrap: break-word; 
     }
 
     td:not(:last-child) {
