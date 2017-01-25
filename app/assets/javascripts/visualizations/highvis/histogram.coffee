@@ -43,6 +43,7 @@ $ ->
       start: ->
         @configs.displayField = Math.min globals.configs.fieldSelection...
         @configs.binSize ?= @defaultBinSize()
+        @configs.showProbDistFunc = false
         super()
 
       buildOptions: (animate = true) ->
@@ -259,6 +260,12 @@ $ ->
         half = @configs.binSize / 2
         @chart.xAxis[0].setExtremes(@globalmin - half, @globalmax + half, true)
 
+        # Build Probability Distribution Function if desired
+        if @configs.showProbDistFunc
+          pdfData = []
+          #TODO
+
+
       buildLegendSeries: ->
         count = -1
         for f, i in data.fields when i in data.normalFields
@@ -277,6 +284,11 @@ $ ->
           
         if data.hasTimeData and data.timeType != data.GEO_TIME
           inctx.period = HandlebarsTemplates[hbCtrl('period')]
+
+        inctx.probDistFunc = 
+          id:       'prob-dist-func'
+          logId:    'probability-distribution-function'
+          label:    'Probability Distribution'
 
         outctx =
           id: 'tools-ctrls'
@@ -350,6 +362,10 @@ $ ->
         # Adds Material Design to slider
         $('#vis-ctrls').find(".mdl-slider").each (i,j) ->
           componentHandler.upgradeElement($(j)[0])
+
+        $('#ckbx-prob-dist-func').click () =>
+          @configs.showProbDistFunc = not @configs.showProbDistFunc
+          @delayedUpdate()
 
       drawControls: ->
         super()

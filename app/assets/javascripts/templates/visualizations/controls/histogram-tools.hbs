@@ -5,9 +5,14 @@
     <label for="bin-size-slider">Automatic:</label>
     <input id="bin-size-slider" type="range" class="mdl-slider mdl-js-slider"
            data-log-id="bin-size-slider" min="0" max="100" value="0" tabindex="0">
+  </div>
   <div>
     <label for="bin-size">Manual:</label>
     <input id="bin-size" class="form-control" value="{{binSize}}">
     <button id="set-bin-size-btn" data-log-id="set-bin-size" class="btn btn-default">Set Bin Size</button>
+  </div>
+  <h4 class="vis-ctrl-subtitle">Analysis</h4>
+  <div>
+    {{> visualizations/controls/_checkbox probDistFunc}}
   </div>
 </div>
