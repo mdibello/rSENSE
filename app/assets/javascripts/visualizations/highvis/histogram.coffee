@@ -43,7 +43,7 @@ $ ->
       start: ->
         @configs.displayField = Math.min globals.configs.fieldSelection...
         @configs.binSize ?= @defaultBinSize()
-        @configs.showProbDistFunc = false
+        @configs.showNormalCurve = false
         super()
 
       buildOptions: (animate = true) ->
@@ -260,9 +260,9 @@ $ ->
         half = @configs.binSize / 2
         @chart.xAxis[0].setExtremes(@globalmin - half, @globalmax + half, true)
 
-        # Build Probability Distribution Function if desired
-        if @configs.showProbDistFunc
-          pdfData = []
+        # Build Normal Curve if desired
+        if @configs.showNormalCurve
+          normalCurveData = []
           #TODO
 
 
@@ -285,10 +285,10 @@ $ ->
         if data.hasTimeData and data.timeType != data.GEO_TIME
           inctx.period = HandlebarsTemplates[hbCtrl('period')]
 
-        inctx.probDistFunc = 
-          id:       'prob-dist-func'
-          logId:    'probability-distribution-function'
-          label:    'Probability Distribution'
+        inctx.normalCurve = 
+          id:       'normal-curve'
+          logId:    'normal-curve'
+          label:    'Normal Curve'
 
         outctx =
           id: 'tools-ctrls'
@@ -363,8 +363,8 @@ $ ->
         $('#vis-ctrls').find(".mdl-slider").each (i,j) ->
           componentHandler.upgradeElement($(j)[0])
 
-        $('#ckbx-prob-dist-func').click () =>
-          @configs.showProbDistFunc = not @configs.showProbDistFunc
+        $('#ckbx-normal-curve').click () =>
+          @configs.showNormalCurve = not @configs.showNormalCurve
           @delayedUpdate()
 
       drawControls: ->
