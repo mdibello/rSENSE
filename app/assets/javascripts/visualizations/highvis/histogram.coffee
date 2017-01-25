@@ -263,8 +263,14 @@ $ ->
         # Build Normal Curve if desired
         if @configs.showNormalCurve
           normalCurveData = []
-          #TODO
-
+          dp = globals.getData(true, globals.configs.activeFilters) 
+          groupSel = data.groupSelection 
+          mean = data.getMean(@configs.displayField, groupSel, dp)
+          stddev = data.getStandardDeviation(@configs.displayField, groupSel, dp)
+          # TODO Finish this:
+          # 1) Get max and min x-axis values
+          # 2) Calculate 100 or so points and store
+          # 3) Add second axis to graph with appropriate data and settings
 
       buildLegendSeries: ->
         count = -1
