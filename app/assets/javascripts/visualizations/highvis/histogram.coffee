@@ -266,10 +266,20 @@ $ ->
           dp = globals.getData(true, globals.configs.activeFilters) 
           groupSel = data.groupSelection 
           mean = data.getMean(@configs.displayField, groupSel, dp)
-          stddev = data.getStandardDeviation(@configs.displayField, groupSel, dp)
+          stddev = data.getStandardDeviation(@configs.displayField, groupSel, dp) 
+          xMin =  @chart.xAxis[0].min
+          xMax =  @chart.xAxis[0].max
+          numberOfPoints = 100
+          normalCurveInterval = (xMax - xMin) / 100
+          x = xMin
+          while x <= xMax
+            y = (1/Math.sqrt(2*(Math.pow(stddev, 2)*Math.PI)))
+            y *= (Math.pow(Math.E, (-(Math.pow((x-mean), 2))/(2*(Math.pow(stddev, 2))))))
+            normalCurveData.push [x, y]
+            x += normalCurveInterval
+          #Modify graph settings
+          
           # TODO Finish this:
-          # 1) Get max and min x-axis values
-          # 2) Calculate 100 or so points and store
           # 3) Add second axis to graph with appropriate data and settings
 
       buildLegendSeries: ->
