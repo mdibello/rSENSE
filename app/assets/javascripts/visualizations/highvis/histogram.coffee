@@ -260,27 +260,53 @@ $ ->
         half = @configs.binSize / 2
         @chart.xAxis[0].setExtremes(@globalmin - half, @globalmax + half, true)
 
+        #alert(@chart.data.toSource())
+
         # Build Normal Curve if desired
+        normalCurveData = []
+        dp = globals.getData(true, globals.configs.activeFilters)
+        groupSel = data.groupSelection
+        mean = data.getMean(@configs.displayField, groupSel, dp)
+        stddev = data.getStandardDeviation(@configs.displayField, groupSel, dp)
+        xMin =  @chart.xAxis[0].min
+        xMax =  @chart.xAxis[0].max
+        numberOfPoints = 100
+        normalCurveInterval = (xMax - xMin) / 100
+        x = xMin
+        while x <= xMax
+          y = (1/Math.sqrt(2*(Math.pow(stddev, 2)*Math.PI)))
+          y *= (Math.pow(Math.E, (-(Math.pow((x-mean), 2))/(2*(Math.pow(stddev, 2))))))
+          normalCurveData.push [x, y]
+          x += normalCurveInterval
+        normalCurveAxisOptions =
+          id: 'normal-curve-axis'
+          opposite: true
+          title:
+            text: 'Normal Distribution'
+        normalCurveSeriesOptions =
+          id: 'normal-curve-data'
+          showInLegend: false
+          color: globals.getColor(groupIndex)
+          name: 'Normal Curve'
+          data: normalCurveData
+          type: 'spline'
+          yAxis: 'normal-curve'
+          marker:
+            enabled: false
+            states:
+              hover:
+                enabled: false
+          tooltip:
+            enabled: false
+        @chart.addAxis normalCurveAxisOptions
+        @chart.addSeries normalCurveSeriesOptions
+
         if @configs.showNormalCurve
-          normalCurveData = []
-          dp = globals.getData(true, globals.configs.activeFilters) 
-          groupSel = data.groupSelection 
-          mean = data.getMean(@configs.displayField, groupSel, dp)
-          stddev = data.getStandardDeviation(@configs.displayField, groupSel, dp) 
-          xMin =  @chart.xAxis[0].min
-          xMax =  @chart.xAxis[0].max
-          numberOfPoints = 100
-          normalCurveInterval = (xMax - xMin) / 100
-          x = xMin
-          while x <= xMax
-            y = (1/Math.sqrt(2*(Math.pow(stddev, 2)*Math.PI)))
-            y *= (Math.pow(Math.E, (-(Math.pow((x-mean), 2))/(2*(Math.pow(stddev, 2))))))
-            normalCurveData.push [x, y]
-            x += normalCurveInterval
-          #Modify graph settings
-          
-          # TODO Finish this:
-          # 3) Add second axis to graph with appropriate data and settings
+          alert 'hello'
+          @chart.get('normal-curve-data').show()
+        else
+          alert 'goodbye'
+          @chart.get('normal-curve-data').hide()
 
       buildLegendSeries: ->
         count = -1
@@ -297,11 +323,11 @@ $ ->
       drawToolControls: ->
         inctx =
           binSize: @configs.binSize
-          
+
         if data.hasTimeData and data.timeType != data.GEO_TIME
           inctx.period = HandlebarsTemplates[hbCtrl('period')]
 
-        inctx.normalCurve = 
+        inctx.normalCurve =
           id:       'normal-curve'
           logId:    'normal-curve'
           label:    'Normal Curve'
@@ -313,7 +339,7 @@ $ ->
 
         tools = HandlebarsTemplates[hbCtrl('body')](outctx)
         $('#vis-ctrls').append(tools)
-        
+
         # Set the correct options for period:
         $('#period-list').val(globals.configs.periodMode)
 
