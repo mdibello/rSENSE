@@ -61,7 +61,7 @@ $ ->
             text: ''
           tooltip:
             formatter: ->
-              
+
               xField = @series.xAxis.options.title.text
               idx = data.fields.map((x) -> fieldTitle(x)).indexOf(xField)
               str  = "<div style='width:100%;text-align:center;'> "
@@ -272,53 +272,45 @@ $ ->
         half = @configs.binSize / 2
         @chart.xAxis[0].setExtremes(@globalmin - half, @globalmax + half, true)
 
-        #alert(@chart.data.toSource())
-
-        # Build Normal Curve if desired
-        normalCurveData = []
-        dp = globals.getData(true, globals.configs.activeFilters)
-        groupSel = data.groupSelection
-        mean = data.getMean(@configs.displayField, groupSel, dp)
-        stddev = data.getStandardDeviation(@configs.displayField, groupSel, dp)
-        xMin =  @chart.xAxis[0].min
-        xMax =  @chart.xAxis[0].max
-        numberOfPoints = 100
-        normalCurveInterval = (xMax - xMin) / 100
-        x = xMin
-        while x <= xMax
-          y = (1/Math.sqrt(2*(Math.pow(stddev, 2)*Math.PI)))
-          y *= (Math.pow(Math.E, (-(Math.pow((x-mean), 2))/(2*(Math.pow(stddev, 2))))))
-          normalCurveData.push [x, y]
-          x += normalCurveInterval
-        normalCurveAxisOptions =
-          id: 'normal-curve-axis'
-          opposite: true
-          title:
-            text: 'Normal Distribution'
-        normalCurveSeriesOptions =
-          id: 'normal-curve-data'
-          showInLegend: false
-          color: globals.getColor(groupIndex)
-          name: 'Normal Curve'
-          data: normalCurveData
-          type: 'spline'
-          yAxis: 'normal-curve'
-          marker:
-            enabled: false
-            states:
-              hover:
-                enabled: false
-          tooltip:
-            enabled: false
-        @chart.addAxis normalCurveAxisOptions
-        @chart.addSeries normalCurveSeriesOptions
-
+        # Build Normal Curve and then hide it
         if @configs.showNormalCurve
-          alert 'hello'
-          @chart.get('normal-curve-data').show()
-        else
-          alert 'goodbye'
-          @chart.get('normal-curve-data').hide()
+          normalCurveData = []
+          dp = globals.getData(true, globals.configs.activeFilters)
+          groupSel = data.groupSelection
+          mean = data.getMean(@configs.displayField, groupSel, dp)
+          stddev = data.getStandardDeviation(@configs.displayField, groupSel, dp)
+          xMin =  @chart.xAxis[0].min
+          xMax =  @chart.xAxis[0].max
+          numberOfPoints = 100
+          normalCurveInterval = (xMax - xMin) / 100
+          x = xMin
+          while x <= xMax
+            y = (1/Math.sqrt(2*(Math.pow(stddev, 2)*Math.PI)))
+            y *= (Math.pow(Math.E, (-(Math.pow((x-mean), 2))/(2*(Math.pow(stddev, 2))))))
+            normalCurveData.push [x, y]
+            x += normalCurveInterval
+          normalCurveAxisOptions =
+            id: 'normal-curve-axis'
+            opposite: true
+            title:
+              text: 'Normal Distribution'
+          normalCurveSeriesOptions =
+            id: 'normal-curve-data'
+            showInLegend: false
+            color: globals.getColor(groupIndex)
+            name: 'Normal Curve'
+            data: normalCurveData
+            type: 'spline'
+            yAxis: 'normal-curve-axis'
+            marker:
+              enabled: false
+              states:
+                hover:
+                  enabled: false
+            tooltip:
+              enabled: false
+          @chart.addAxis normalCurveAxisOptions
+          @chart.addSeries normalCurveSeriesOptions
 
       buildLegendSeries: ->
         count = -1
@@ -419,6 +411,9 @@ $ ->
 
         $('#ckbx-normal-curve').click () =>
           @configs.showNormalCurve = not @configs.showNormalCurve
+          if @configs.showNormalCurve == false
+            @chart.get('normal-curve-data').remove()
+            @chart.get('normal-curve-axis').remove()
           @delayedUpdate()
 
       drawControls: ->
