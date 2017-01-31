@@ -273,6 +273,10 @@ $ ->
         @chart.xAxis[0].setExtremes(@globalmin - half, @globalmax + half, true)
 
         # Build Normal Curve and then hide it
+        if @chart.get('normal-curve-data') != null
+          @chart.get('normal-curve-data').remove()
+        if @chart.get('normal-curve-axis') != null
+          @chart.get('normal-curve-axis').remove()
         if @configs.showNormalCurve
           normalCurveData = []
           dp = globals.getData(true, globals.configs.activeFilters)
@@ -283,12 +287,19 @@ $ ->
           xMax =  @chart.xAxis[0].max
           numberOfPoints = 100
           normalCurveInterval = (xMax - xMin) / 100
+          # Calculate points to plot for the normal curve
           x = xMin
           while x <= xMax
             y = (1/Math.sqrt(2*(Math.pow(stddev, 2)*Math.PI)))
             y *= (Math.pow(Math.E, (-(Math.pow((x-mean), 2))/(2*(Math.pow(stddev, 2))))))
             normalCurveData.push [x, y]
             x += normalCurveInterval
+          # Figure out the line color
+          lineColor = data.groupSelection[0]
+          for e in data.groupSelection
+            if e > lineColor
+              lineColor = e
+          lineColor += 1
           normalCurveAxisOptions =
             id: 'normal-curve-axis'
             opposite: true
@@ -297,7 +308,7 @@ $ ->
           normalCurveSeriesOptions =
             id: 'normal-curve-data'
             showInLegend: false
-            color: globals.getColor(groupIndex)
+            color: globals.getColor(lineColor)
             name: 'Normal Curve'
             data: normalCurveData
             type: 'spline'
