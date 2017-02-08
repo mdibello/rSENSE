@@ -272,7 +272,7 @@ $ ->
         half = @configs.binSize / 2
         @chart.xAxis[0].setExtremes(@globalmin - half, @globalmax + half, true)
 
-        # Build Normal Curve and then hide it
+        # Build Normal Curve
         if @chart.get('normal-curve-data') != null
           @chart.get('normal-curve-data').remove()
         if @chart.get('normal-curve-axis') != null
@@ -283,8 +283,8 @@ $ ->
           groupSel = data.groupSelection
           mean = data.getMean(@configs.displayField, groupSel, dp)
           stddev = data.getStandardDeviation(@configs.displayField, groupSel, dp)
-          xMin =  @chart.xAxis[0].min
-          xMax =  @chart.xAxis[0].max
+          xMin =  @chart.xAxis[0].min - (@configs.binSize / 2)
+          xMax =  @chart.xAxis[0].max + (@configs.binSize / 2)
           numberOfPoints = 100
           normalCurveInterval = (xMax - xMin) / 100
           # Calculate points to plot for the normal curve
@@ -319,7 +319,8 @@ $ ->
                 hover:
                   enabled: false
             tooltip:
-              enabled: false
+              pointFormat: 'Normal Curve'
+            pointRange: @configs.binSize
           @chart.addAxis normalCurveAxisOptions
           @chart.addSeries normalCurveSeriesOptions
 
