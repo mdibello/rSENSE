@@ -61,28 +61,37 @@ $ ->
             text: ''
           tooltip:
             formatter: ->
-
-              xField = @series.xAxis.options.title.text
-              idx = data.fields.map((x) -> fieldTitle(x)).indexOf(xField)
               str  = "<div style='width:100%;text-align:center;'> "
-              str += "<b><u>Bin #{@x}</u></b><br>"
-              str += "Contains #{@total} Items<br>"
-              str += "Within the Range #{@x - document.getElementById("bin-size").value / 2}"
-              str += "- #{@x + document.getElementById("bin-size").value / 2}</div><br>"
-              str += "<table>"
-              str += "<tr><td style='text-align: right'>Group :&nbsp;</td>"
-              str += "<td style='color:#{@series.color};'>#{@series.name}</td></tr>"
-              if @y > 0
-                if @y is 1
-                  # Print specific value
-                  str += "<tr><td style='text-align: right'>#{xField} :&nbsp;</td><td style='color:#{@series.color};'>"
-                  str += if (@point.realValue == undefined) then "1 in this Bin" else "#{@point.realValue}"
-                  str += "</td></tr>"
-                else
-                  # Print amount in bin
-                  str += "<tr><td style='text-align: right'>Data Points :&nbsp;</td>"
-                  str += "<td style='color:#{@series.color};'>#{@y} in this Bin</td></tr>"
-              str += "</table>"
+              if @series.name == 'Normal Curve'
+                dp = globals.getData(true, globals.configs.activeFilters)
+                groupSel = data.groupSelection
+                #mean = data.getMean(@configs.displayField, groupSel, dp)
+                #stddev = data.getStandardDeviation(@configs.displayField, groupSel, dp)
+                str += "<b><u>Normal Curve</u></b>"
+                str += "<br>Mean: "
+                str += "<br>Standard Deviation: "
+                str += "</div>"
+              else
+                xField = @series.xAxis.options.title.text
+                idx = data.fields.map((x) -> fieldTitle(x)).indexOf(xField)
+                str += "<b><u>Bin #{@x}</u></b><br>"
+                str += "Contains #{@total} Items<br>"
+                str += "Within the Range #{@x - document.getElementById("bin-size").value / 2}"
+                str += "- #{@x + document.getElementById("bin-size").value / 2}</div><br>"
+                str += "<table>"
+                str += "<tr><td style='text-align: right'>Group :&nbsp;</td>"
+                str += "<td style='color:#{@series.color};'>#{@series.name}</td></tr>"
+                if @y > 0
+                  if @y is 1
+                    # Print specific value
+                    str += "<tr><td style='text-align: right'>#{xField} :&nbsp;</td><td style='color:#{@series.color};'>"
+                    str += if (@point.realValue == undefined) then "1 in this Bin" else "#{@point.realValue}"
+                    str += "</td></tr>"
+                  else
+                    # Print amount in bin
+                    str += "<tr><td style='text-align: right'>Data Points :&nbsp;</td>"
+                    str += "<td style='color:#{@series.color};'>#{@y} in this Bin</td></tr>"
+                str += "</table>"
             useHTML: true
           plotOptions:
             column:
@@ -318,9 +327,6 @@ $ ->
               states:
                 hover:
                   enabled: false
-            tooltip:
-              pointFormat: 'Normal Curve'
-            pointRange: @configs.binSize
           @chart.addAxis normalCurveAxisOptions
           @chart.addSeries normalCurveSeriesOptions
 
