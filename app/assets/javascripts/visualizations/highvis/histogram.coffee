@@ -66,13 +66,9 @@ $ ->
               else
                 str  = "<div style='width:100%;text-align:center;'> "
                 if @series.name == 'Normal Curve'
-                  dp = globals.getData(true, globals.configs.activeFilters)
-                  groupSel = data.groupSelection
-                  #mean = data.getMean(@configs.displayField, groupSel, dp)
-                  #stddev = data.getStandardDeviation(@configs.displayField, groupSel, dp)
                   str += "<b><u>Normal Curve</u></b>"
-                  str += "<br>Mean: "
-                  str += "<br>Standard Deviation: "
+                  str += "<br>Mean: " + @series.options.mean
+                  str += "<br>Standard Deviation: " + @series.options.stddev
                   str += "</div>"
                 else
                   xField = @series.xAxis.options.title.text
@@ -331,8 +327,13 @@ $ ->
               states:
                 hover:
                   enabled: false
+            mean: mean
+            stddev: stddev
           @chart.addAxis normalCurveAxisOptions
           @chart.addSeries normalCurveSeriesOptions
+          # Need to rerun buildOptions() because the first time it was run, there was not enough info
+          # to calculate the mean and standard deviation for the tooltip
+          @buildOptions(false)
 
       buildLegendSeries: ->
         count = -1
