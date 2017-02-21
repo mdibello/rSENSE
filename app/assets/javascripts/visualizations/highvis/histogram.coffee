@@ -61,6 +61,8 @@ $ ->
             text: ''
           tooltip:
             formatter: ->
+              # If total items in a bin = 0, don't show the tooltip
+              # This is important for when the normal line is shown
               if @total <= 0
                 false
               else
