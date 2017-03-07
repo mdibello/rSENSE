@@ -286,8 +286,10 @@ $ ->
         # Build Normal Curve
         if @chart.get('normal-curve-data') != null
           @chart.get('normal-curve-data').remove()
-        if @chart.get('normal-curve-axis') != null
-          @chart.get('normal-curve-axis').remove()
+        if @chart.get('normal-curve-y-axis') != null
+          @chart.get('normal-curve-y-axis').remove()
+        if @chart.get('normal-curve-x-axis') != null
+          @chart.get('normal-curve-x-axis').remove()
         if @configs.showNormalCurve
           normalCurveData = []
           dp = globals.getData(true, globals.configs.activeFilters)
@@ -297,7 +299,7 @@ $ ->
           xMin =  @chart.xAxis[0].min - (@configs.binSize / 2)
           xMax =  @chart.xAxis[0].max + (@configs.binSize / 2)
           numberOfPoints = 100
-          normalCurveInterval = (xMax - xMin) / 100
+          normalCurveInterval = (xMax - xMin) / numberOfPoints
           # Calculate points to plot for the normal curve
           x = xMin
           while x <= xMax
@@ -311,11 +313,22 @@ $ ->
             if e > lineColor
               lineColor = e
           lineColor += 1
-          normalCurveAxisOptions =
-            id: 'normal-curve-axis'
+          normalCurveYAxisOptions =
+            id: 'normal-curve-y-axis'
             opposite: true
             title:
               text: 'Normal Distribution'
+            min: 0
+          normalCurveXAxisOptions =
+            id: 'normal-curve-x-axis'
+            lineWidth: 0
+            minorGridLineWidth: 0
+            lineColor: 'transparent'
+            labels:
+              enabled: false
+            minorTickLength: 0
+            tickLength: 0
+            linkedTo: 0
           normalCurveSeriesOptions =
             id: 'normal-curve-data'
             showInLegend: false
@@ -323,15 +336,18 @@ $ ->
             name: 'Normal Curve'
             data: normalCurveData
             type: 'spline'
-            yAxis: 'normal-curve-axis'
+            yAxis: 'normal-curve-y-axis'
+            xAxis: 'normal-curve-x-axis'
             marker:
               enabled: false
               states:
                 hover:
                   enabled: false
+            lineWidth: 3
             mean: mean
             stddev: stddev
-          @chart.addAxis normalCurveAxisOptions
+          @chart.addAxis(normalCurveXAxisOptions, true)
+          @chart.addAxis normalCurveYAxisOptions
           @chart.addSeries normalCurveSeriesOptions
           # Need to rerun buildOptions() because the first time it was run, there was not enough info
           # to calculate the mean and standard deviation for the tooltip
@@ -368,6 +384,9 @@ $ ->
 
         tools = HandlebarsTemplates[hbCtrl('body')](outctx)
         $('#vis-ctrls').append(tools)
+
+        # Just to make sure normal curve checkbox is properly checked/unchecked
+        document.getElementById('ckbx-normal-curve').checked = @configs.showNormalCurve
 
         # Set the correct options for period:
         $('#period-list').val(globals.configs.periodMode)
@@ -438,7 +457,8 @@ $ ->
           @configs.showNormalCurve = not @configs.showNormalCurve
           if @configs.showNormalCurve == false
             @chart.get('normal-curve-data').remove()
-            @chart.get('normal-curve-axis').remove()
+            @chart.get('normal-curve-y-axis').remove()
+            @chart.get('normal-curve-x-axis').remove()
           @delayedUpdate()
 
       drawControls: ->
