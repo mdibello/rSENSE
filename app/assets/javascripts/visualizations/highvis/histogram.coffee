@@ -71,8 +71,8 @@ $ ->
                   str += "<b><u>Normal Curve</u></b>"
                   str += "<br>Mean: " + @series.options.mean
                   str += "<br>Standard Deviation: " + @series.options.stddev
-                  str += "<br>Skewness: " + @series.options.skewness
-                  str += "<br>Kurtosis: " + @series.options.kurtosis
+                  str += "<br>Skewness: " #+ @series.options.skewness
+                  str += "<br>Kurtosis: " #+ @series.options.kurtosis
                   str += "</div>"
                 else
                   xField = @series.xAxis.options.title.text
@@ -285,23 +285,41 @@ $ ->
         half = @configs.binSize / 2
         @chart.xAxis[0].setExtremes(@globalmin - half, @globalmax + half, true)
 
-        # Build Normal Curve
+        # Remove old invalid normal curve data/axes
         if @chart.get('normal-curve-data') != null
           @chart.get('normal-curve-data').remove()
         if @chart.get('normal-curve-y-axis') != null
           @chart.get('normal-curve-y-axis').remove()
         if @chart.get('normal-curve-x-axis') != null
           @chart.get('normal-curve-x-axis').remove()
+
+        # Build Normal Curve
         if @configs.showNormalCurve
           dp = globals.getData(true, globals.configs.activeFilters)
           groupSel = data.groupSelection
           mean = data.getMean(@configs.displayField, groupSel, dp)
           stddev = data.getStandardDeviation(@configs.displayField, groupSel, dp)
-          xMin =  @chart.xAxis[0].min - (@configs.binSize / 2)
-          xMax =  @chart.xAxis[0].max + (@configs.binSize / 2)
+
+          # Build list of valid data points
+          validData = []
+          for d in dp
+            validData.push d[@configs.displayField] if d[@configs.displayField]?
+          n = validData.length
+
+          # Calculate skewness
+          sum1 = sum2 = 0
+          for i in [0...n]
+            sum1 += Math.pow((validData[i] - mean), 3)
+            sum2 += Math.pow((validData[i] - mean), 2)
+          skewness = ((1/n)*sum1) / Math.pow(((1/n)*sum2), (3/2))
+
+          # Calculate kurtosis
+          sum1 = sum2 = 0
 
           normalCurveData = []
           numberOfPoints = 100
+          xMin =  @chart.xAxis[0].min - (@configs.binSize / 2)
+          xMax =  @chart.xAxis[0].max + (@configs.binSize / 2)
           normalCurveInterval = (xMax - xMin) / numberOfPoints
 
           # Calculate points to plot for the normal curve
@@ -354,6 +372,8 @@ $ ->
             lineWidth: 3
             mean: mean
             stddev: stddev
+            skewness: skewness
+            kurtosis: kurtosis
 
           @chart.addAxis(normalCurveXAxisOptions, true)
           @chart.addAxis normalCurveYAxisOptions
