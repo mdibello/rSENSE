@@ -299,22 +299,7 @@ $ ->
           groupSel = data.groupSelection
           mean = data.getMean(@configs.displayField, groupSel, dp)
           stddev = data.getStandardDeviation(@configs.displayField, groupSel, dp)
-
-          # Build list of valid data points
-          validData = []
-          for d in dp
-            validData.push d[@configs.displayField] if d[@configs.displayField]?
-          n = validData.length
-
-          # Calculate skewness
-          sum1 = sum2 = 0
-          for i in [0...n]
-            sum1 += Math.pow((validData[i] - mean), 3)
-            sum2 += Math.pow((validData[i] - mean), 2)
-          skewness = ((1/n)*sum1) / Math.pow(((1/n)*sum2), (3/2))
-
-          # Calculate kurtosis
-          sum1 = sum2 = 0
+          skewness = data.getSkewness(@configs.displayField, groupSel, dp)
 
           normalCurveData = []
           numberOfPoints = 100
