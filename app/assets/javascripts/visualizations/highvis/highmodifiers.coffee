@@ -312,11 +312,32 @@ $ ->
 
       if rawData.length > 0
         mean = (rawData.reduce (a,b) -> a + b) / rawData.length
-        numer = (1.0/rawData.length) * (rawData.reduce(((a, b) -> a + Math.pow(b - mean, 3)), 0))
-        denom = (1.0/rawData.length) * (rawData.reduce (a, b) -> a + Math.pow(b - mean, 2))
+        numer = (1.0/rawData.length) * (rawData.reduce (a,b) -> a + Math.pow(b - mean, 3))
+        denom = (1.0/rawData.length) * (rawData.reduce (a,b) -> a + Math.pow(b - mean, 2))
         denom = Math.pow(denom, (3/2))
         skewness = numer / denom
         data.precisionFilter(skewness)
+      else
+        null
+
+    ###
+    Gets the kurtosis (numeric) value for the given field index.
+    All included datapoints must pass the given filter (defaults to all datapoints).
+    ###
+
+    data.getKurtosis = (fieldIndex, groupIndices, dp) ->
+      if groupIndices?
+        if typeof groupIndices is 'number' then groupIndices = [groupIndices]
+        rawData = @multiGroupSelector(fieldIndex, groupIndices, dp)
+      else
+        rawData = dp.map (p) -> p[fieldIndex]
+
+      if rawData.length > 0
+        mean = (rawData.reduce (a,b) -> a + b) / rawData.length
+        numer = (1.0/rawData.length) * (rawData.reduce (a,b) -> a + Math.pow(b - mean, 4))
+        denom = Math.pow((1.0/rawData.length) * (rawData.reduce (a,b) -> a + Math.pow(b - mean, 2)), 2)
+        kurtosis = (numer / denom) - 3
+        data.precisionFilter(kurtosis)
       else
         null
 

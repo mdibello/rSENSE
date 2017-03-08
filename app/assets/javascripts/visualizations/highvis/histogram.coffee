@@ -71,8 +71,8 @@ $ ->
                   str += "<b><u>Normal Curve</u></b>"
                   str += "<br>Mean: " + @series.options.mean
                   str += "<br>Standard Deviation: " + @series.options.stddev
-                  str += "<br>Skewness: " #+ @series.options.skewness
-                  str += "<br>Kurtosis: " #+ @series.options.kurtosis
+                  str += "<br>Skewness: " + @series.options.skewness
+                  str += "<br>Kurtosis: " + @series.options.kurtosis
                   str += "</div>"
                 else
                   xField = @series.xAxis.options.title.text
@@ -300,6 +300,7 @@ $ ->
           mean = data.getMean(@configs.displayField, groupSel, dp)
           stddev = data.getStandardDeviation(@configs.displayField, groupSel, dp)
           skewness = data.getSkewness(@configs.displayField, groupSel, dp)
+          kurtosis = data.getKurtosis(@configs.displayField, groupSel, dp)
 
           normalCurveData = []
           numberOfPoints = 100
