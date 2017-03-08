@@ -71,6 +71,8 @@ $ ->
                   str += "<b><u>Normal Curve</u></b>"
                   str += "<br>Mean: " + @series.options.mean
                   str += "<br>Standard Deviation: " + @series.options.stddev
+                  str += "<br>Skewness: " + @series.options.skewness
+                  str += "<br>Kurtosis: " + @series.options.kurtosis
                   str += "</div>"
                 else
                   xField = @series.xAxis.options.title.text
@@ -291,15 +293,17 @@ $ ->
         if @chart.get('normal-curve-x-axis') != null
           @chart.get('normal-curve-x-axis').remove()
         if @configs.showNormalCurve
-          normalCurveData = []
           dp = globals.getData(true, globals.configs.activeFilters)
           groupSel = data.groupSelection
           mean = data.getMean(@configs.displayField, groupSel, dp)
           stddev = data.getStandardDeviation(@configs.displayField, groupSel, dp)
           xMin =  @chart.xAxis[0].min - (@configs.binSize / 2)
           xMax =  @chart.xAxis[0].max + (@configs.binSize / 2)
+
+          normalCurveData = []
           numberOfPoints = 100
           normalCurveInterval = (xMax - xMin) / numberOfPoints
+
           # Calculate points to plot for the normal curve
           x = xMin
           while x <= xMax
@@ -307,18 +311,21 @@ $ ->
             y *= (Math.pow(Math.E, (-(Math.pow((x-mean), 2))/(2*(Math.pow(stddev, 2))))))
             normalCurveData.push [x, y]
             x += normalCurveInterval
+
           # Figure out the line color
           lineColor = data.groupSelection[0]
           for e in data.groupSelection
             if e > lineColor
               lineColor = e
           lineColor += 1
+
           normalCurveYAxisOptions =
             id: 'normal-curve-y-axis'
             opposite: true
             title:
               text: 'Normal Distribution'
             min: 0
+
           normalCurveXAxisOptions =
             id: 'normal-curve-x-axis'
             lineWidth: 0
@@ -329,6 +336,7 @@ $ ->
             minorTickLength: 0
             tickLength: 0
             linkedTo: 0
+
           normalCurveSeriesOptions =
             id: 'normal-curve-data'
             showInLegend: false
@@ -346,9 +354,11 @@ $ ->
             lineWidth: 3
             mean: mean
             stddev: stddev
+
           @chart.addAxis(normalCurveXAxisOptions, true)
           @chart.addAxis normalCurveYAxisOptions
           @chart.addSeries normalCurveSeriesOptions
+
           # Need to rerun buildOptions() because the first time it was run, there was not enough info
           # to calculate the mean and standard deviation for the tooltip
           @buildOptions(false)
