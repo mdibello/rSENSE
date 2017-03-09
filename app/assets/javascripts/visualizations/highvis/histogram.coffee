@@ -55,6 +55,7 @@ $ ->
         $.extend true, @chartOptions,
           chart:
             type: 'column'
+            alignTicks: false
           legend:
             enabled: false
           title:
@@ -110,6 +111,9 @@ $ ->
             {alignTicks: false},
             lineWidth: 0
             categories: ['']
+            startOnTick: false
+            endOnTick: false
+            maxPadding: 0
           ]
 
       ###
@@ -185,19 +189,23 @@ $ ->
           min = Math.round(min / @configs.binSize) * @configs.binSize
           @globalmin = Math.min(@globalmin, min)
 
+          alert @globalmin
+
           max = data.getMax(@configs.displayField, groupIndex, dp)
           max = Math.round(max / @configs.binSize) * @configs.binSize
           @globalmax = Math.max(@globalmax, max)
 
+          alert @globalMax
+
         # Make 'fake' data to ensure proper bar spacing
-        fakeDat = for i in [@globalmin...@globalmax] by @configs.binSize
-          [i, 0]
+        #fakeDat = for i in [@globalmin...@globalmax] by @configs.binSize
+        #  [i, 0]
 
-        options =
-          showInLegend: false
-          data: fakeDat
+        #options =
+        #  showInLegend: false
+        #  data: fakeDat
 
-        @chart.addSeries options, false
+        #@chart.addSeries options, false
 
         # Generate all bin data
         binObjs = {}
@@ -304,9 +312,11 @@ $ ->
 
           normalCurveData = []
           numberOfPoints = 100
-          xMin =  @chart.xAxis[0].min - (@configs.binSize / 2)
-          xMax =  @chart.xAxis[0].max + (@configs.binSize / 2)
+          xMin =  @chart.xAxis[0].getExtremes().min - (@configs.binSize / 2)
+          xMax =  @chart.xAxis[0].getExtremes().max + (@configs.binSize / 2)
           normalCurveInterval = (xMax - xMin) / numberOfPoints
+
+          alert xMin + " - " + xMax
 
           # Calculate points to plot for the normal curve
           x = xMin
@@ -329,6 +339,7 @@ $ ->
             title:
               text: 'Normal Distribution'
             min: 0
+            gridLineColor: lineColor
 
           normalCurveXAxisOptions =
             id: 'normal-curve-x-axis'
@@ -368,6 +379,8 @@ $ ->
           # Need to rerun buildOptions() because the first time it was run, there was not enough info
           # to calculate the mean and standard deviation for the tooltip
           @buildOptions(false)
+
+          #@chart.xAxis[0].setExtremes(xMin, xMax, true)
 
       buildLegendSeries: ->
         count = -1
