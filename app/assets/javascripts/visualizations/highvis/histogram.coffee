@@ -187,25 +187,20 @@ $ ->
         for groupIndex in data.groupSelection
           min = data.getMin(@configs.displayField, groupIndex, dp)
           min = Math.round(min / @configs.binSize) * @configs.binSize
-          @globalmin = Math.min(@globalmin, min)
-
-          alert @globalmin
 
           max = data.getMax(@configs.displayField, groupIndex, dp)
           max = Math.round(max / @configs.binSize) * @configs.binSize
           @globalmax = Math.max(@globalmax, max)
 
-          alert @globalMax
-
         # Make 'fake' data to ensure proper bar spacing
-        #fakeDat = for i in [@globalmin...@globalmax] by @configs.binSize
-        #  [i, 0]
+        fakeDat = for i in [@globalmin...@globalmax] by @configs.binSize
+          [i, 0]
 
-        #options =
-        #  showInLegend: false
-        #  data: fakeDat
+        options =
+          showInLegend: false
+          data: fakeDat
 
-        #@chart.addSeries options, false
+        @chart.addSeries options, false
 
         # Generate all bin data
         binObjs = {}
@@ -315,8 +310,6 @@ $ ->
           xMin =  @chart.xAxis[0].getExtremes().min - (@configs.binSize / 2)
           xMax =  @chart.xAxis[0].getExtremes().max + (@configs.binSize / 2)
           normalCurveInterval = (xMax - xMin) / numberOfPoints
-
-          alert xMin + " - " + xMax
 
           # Calculate points to plot for the normal curve
           x = xMin
