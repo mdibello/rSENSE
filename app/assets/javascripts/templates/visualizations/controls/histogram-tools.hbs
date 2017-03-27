@@ -11,7 +11,18 @@
     <input id="bin-size" class="form-control" value="{{binSize}}">
     <button id="set-bin-size-btn" data-log-id="set-bin-size" class="btn btn-default">Set Bin Size</button>
   </div>
-  <h4 class="vis-ctrl-subtitle">Analysis</h4>
+  <h4 class="vis-ctrl-subtitle">
+    Analysis
+    <i class="fa fa-question-circle control-tooltip"
+      data-toggle="tooltip" data-placement="right"
+      title="For Normal Curve Analysis: 
+              ~Skewness measures left/right skew of data where a negative value represents a right 
+             skew, and a positive value represents a left skew.
+              ~Kurtosis measures the flatness/peakedness of the data where a positive value means
+             that the data is too centrally peaked and a negative value means there isn't enough
+             of a central peak (too flat).">
+    </i>
+  </h4>
   <div>
     {{> visualizations/controls/_checkbox normalCurve}}
   </div>
