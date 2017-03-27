@@ -187,6 +187,7 @@ $ ->
         for groupIndex in data.groupSelection
           min = data.getMin(@configs.displayField, groupIndex, dp)
           min = Math.round(min / @configs.binSize) * @configs.binSize
+          @globalmin = Math.min(@globalmin, min)
 
           max = data.getMax(@configs.displayField, groupIndex, dp)
           max = Math.round(max / @configs.binSize) * @configs.binSize
