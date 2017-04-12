@@ -10,7 +10,7 @@ class VisualizationsController < ApplicationController
 
   def set_vis_list
     # A list of all current visualizations
-    @all_vis =  ['Map', 'Timeline', 'Scatter', 'Bar', 'Histogram', 'Pie', 'Table', 'Summary', 'Photos']
+    @all_vis =  ['Map', 'Timeline', 'Scatter', 'Bar', 'Histogram', 'Box', 'Pie', 'Table', 'Summary', 'Photos']
   end
 
   # GET /visualizations
@@ -250,24 +250,33 @@ class VisualizationsController < ApplicationController
     # build list of datasets
     if !params[:datasets].nil?
       dsets = params[:datasets].split(',')
-      dsets.each do |id|
-        begin
-          dset = DataSet.find_by_id(id)
-          if dset.project_id == @project.id
-            @datasets.push dset
-          else
-            fail 'data set does not belong to project'
-          end
-        rescue
-          respond_to do |format|
-            format.html { redirect_to '/404.html' }
-            format.json { render json: { errors: ['File not found.'] }, status: 404 }
-          end
-          return
+      @datasets = DataSet.where(id: dsets, project_id: @project.id)
+
+      if @datasets.length == 0
+        respond_to do |format|
+          format.html { redirect_to '/404.html' }
+          format.json { render json: { errors: ['File not found.'] }, status: 404 }
         end
+        return
       end
     else
-      @datasets = DataSet.where(project_id: params[:id])
+      @datasets = DataSet.includes(:user, media_objects: [{ project: [:fields, :formula_fields, :media_objects, :data_sets, :user, :likes] },
+                                                          { data_set: [{ project: [:fields] }, :user] }, { tutorial: [:user, :media_objects] }, { visualization: [:user, :project] },
+                                                          { news: [:user, :media_objects] }, :user]).where(project_id: params[:id])
+    end
+
+    total_data_points = 0
+    @datasets.each do |dset|
+      total_data_points += dset.count
+    end
+
+    if total_data_points > 100000
+      flash[:danger] = 'Too many data points selected. You may only visualize up to 100,000 data points at one time.'
+      respond_to do |format|
+        format.html { redirect_to @project }
+        format.json { render json: { errors: ['Too many data points.'] }, status: 302 }
+      end
+      return
     end
 
     # create special row identifier field for all datasets
@@ -325,7 +334,7 @@ class VisualizationsController < ApplicationController
         arr.push "#{dataset.title}(#{dataset.id})"
         arr.push 'All'
         arr.push ''
-        arr.push dataset.key.nil? ? "User: #{User.select(:name).find(dataset.user_id).name}" : "Key: #{dataset.key}"
+        arr.push dataset.key.nil? ? "User: #{dataset.user.name}" : "Key: #{dataset.key}"
         arr.push ''
 
         data_fields.slice(arr.length, data_fields.length).each do |field|
@@ -429,6 +438,7 @@ class VisualizationsController < ApplicationController
       visualizations.push 'Bar'
       visualizations.push 'Pie'
       visualizations.push 'Histogram'
+      visualizations.push 'Box'
     end
 
     visualizations.push 'Table'

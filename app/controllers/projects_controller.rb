@@ -62,7 +62,7 @@ class ProjectsController < ApplicationController
 
     @cloned_project = Project.select(:id, :user_id, :title).where(id: @project.cloned_from).first
     @liked_by_cur_user = Like.find_by_user_id_and_project_id(current_user, @project.id)
-    @data_sets = @project.data_sets.select('id', 'title', 'user_id', 'key', 'created_at', 'contributor_name').search(params[:search])
+    @data_sets = @project.data_sets.includes(:user).select('id', 'title', 'user_id', 'key', 'created_at', 'contributor_name').search(params[:search])
     @fields = @project.fields
     @field_count = @fields.count
     @formula_fields = @project.formula_fields
@@ -408,6 +408,11 @@ class ProjectsController < ApplicationController
                 ['Latitude', get_field_type('Latitude')],
                 ['Longitude', get_field_type('Longitude')]]
 
+    if params[:file].size > 10000000
+      redirect_to @project, alert: 'Maximum upload size of a single data set is 10 MB. Please split your file into multiple pieces and upload them individually.'
+      return
+    end
+
     uploader = FileUploader.new
     data_obj = uploader.generateObjectForTemplateUpload(params[:file])
 
@@ -492,6 +497,37 @@ class ProjectsController < ApplicationController
     @cloned_project = @project
     respond_to do |format|
       format.html
+    end
+  end
+
+  def create_tag
+    tag = Tag.find_or_create_by(name: params[:name].to_s.squish)
+    project = Project.find(params[:id])
+    unless project.tags.exists?(tag.id)
+      project.tags << tag
+    end
+    project.save!
+    respond_to do |format|
+      msg = { status: 'ok', message: 'Success!',
+             id: tag.id, name: tag.name }
+      format.json  { render json: msg }
+    end
+  end
+
+  def remove_tag
+    tag_id = params[:tagId]
+    project_id = params[:id]
+    tag = Tag.find(tag_id)
+    project = Project.find(project_id)
+    # deletes association but not tag
+    project.tags.delete(tag)
+    last_tagging = Tagging.where(tag_id: tag_id).empty?
+    if last_tagging
+      tag.delete
+    end
+    respond_to do |format|
+      msg = { status: 'ok', message: 'Success!' }
+      format.json  { render json: msg }
     end
   end
 
