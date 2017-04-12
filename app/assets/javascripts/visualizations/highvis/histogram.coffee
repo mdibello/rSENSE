@@ -101,6 +101,7 @@ $ ->
           plotOptions:
             column:
               stacking: 'normal'
+              stickyTracking: true
               groupPadding: 0
               pointPadding: 0
             series:
@@ -200,6 +201,7 @@ $ ->
         options =
           showInLegend: false
           data: fakeDat
+          enableMouseTracking: false
 
         @chart.addSeries options, false
 
