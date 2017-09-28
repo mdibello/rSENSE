@@ -81,7 +81,7 @@ $ ->
                   str += "<b><u>Bin #{@x}</u></b><br>"
                   str += "Contains #{@total} Items<br>"
                   str += "Within the Range #{@x - document.getElementById("bin-size").value / 2}"
-                  str += "- #{@x + document.getElementById("bin-size").value / 2}</div><br>"
+                  str += " - #{@x + document.getElementById("bin-size").value / 2}</div><br>"
                   str += "<table>"
                   str += "<tr><td style='text-align: right'>Group :&nbsp;</td>"
                   str += "<td style='color:#{@series.color};'>#{@series.name}</td></tr>"
@@ -98,23 +98,24 @@ $ ->
                       str += "<td style='color:#{@series.color};'>#{@y} in this Bin</td></tr>"
                   str += "</table>"
             useHTML: true
+            shared: false
           plotOptions:
             column:
               stacking: 'normal'
-              stickyTracking: true
-              groupPadding: 0
-              pointPadding: 0
+              stickyTracking: false
+              #groupPadding: 0
+              #pointPadding: 0
             series:
               events:
                 legendItemClick: (event) ->
                   false
           xAxis: [
-            {alignTicks: false},
+            {alignTicks: false}
             lineWidth: 0
             categories: ['']
             startOnTick: false
             endOnTick: false
-            maxPadding: 0
+            #maxPadding: 0
           ]
 
       ###
