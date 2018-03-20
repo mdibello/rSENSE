@@ -844,7 +844,7 @@ $ ->
             return
 
           # Else create a new annotation
-          if ((@canvas is "scatter-canvas") or (@canvas is "timeline-canvas")) and (@chart.getSelectedPoints().length isnt 1)
+          if ((@canvas is "scatter-canvas") or (@canvas is "timeline-canvas") or (@canvas is "machinelearning-canvas")) and (@chart.getSelectedPoints().length isnt 1)
             $('#annotation-editor>p').html("<span style='color: gray;'>TIP: Select a point to lock onto a callout bubble.</span>")
           else
             $('#annotation-editor>p').html("")

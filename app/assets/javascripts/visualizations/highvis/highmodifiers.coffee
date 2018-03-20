@@ -32,7 +32,7 @@ $ ->
     # Use this to save vis state
     window.globals ?= {}
     globals.configs ?= {}
-    globals.clippingVises = ['map', 'timeline', 'scatter', 'table']
+    globals.clippingVises = ['map', 'timeline', 'scatter', 'machinelearning', 'table']
     globals.configs.activeFilters ?= []
     globals.configs.clippingMode ?= false
 

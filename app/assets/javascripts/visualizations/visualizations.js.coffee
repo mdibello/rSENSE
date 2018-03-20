@@ -120,7 +120,8 @@ $ ->
     ### Hide all vis canvases to start ###
     $(can).hide() for can in ['#map-canvas', '#timeline-canvas',
       '#scatter-canvas', '#bar-canvas', '#histogram-canvas', '#pie-canvas',
-      '#box-canvas', '#table-canvas', '#summary-canvas','#viscanvas','#photos-canvas']
+      '#box-canvas', '#table-canvas', '#summary-canvas','#viscanvas','#photos-canvas',
+      '#machinelearning-canvas']
 
     # Restore saved globals
     if data.savedGlobals?
@@ -183,7 +184,7 @@ $ ->
       light = "#{data.allVis[vis]}_light"
 
       enabled = data.allVis[vis] in data.relVis
-      lower = data.allVis[vis].toLowerCase()
+      lower = data.allVis[vis].toLowerCase().replace(' ', '')
       ctx.id = 'vis-tab-' + lower
       ctx.name = data.allVis[vis]
       ctx.canvas = lower + '-canvas'
@@ -232,7 +233,7 @@ $ ->
       end = href.indexOf('-canvas')
       start = start + 1
 
-      link = href.substr(start, end - start)
+      link = href.substr(start, end - start).replace(' ', '')
 
       globals.configs.curVis = 'globals.' + link
       globals.curVis = eval(globals.configs.curVis)

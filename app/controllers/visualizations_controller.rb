@@ -10,7 +10,7 @@ class VisualizationsController < ApplicationController
 
   def set_vis_list
     # A list of all current visualizations
-    @all_vis =  ['Map', 'Timeline', 'Scatter', 'Bar', 'Histogram', 'Box', 'Pie', 'Table', 'Summary', 'Photos']
+    @all_vis =  ['Map', 'Timeline', 'Scatter', 'Bar', 'Histogram', 'Box', 'Pie', 'Table', 'Summary', 'Photos', 'Machine Learning']
   end
 
   # GET /visualizations
@@ -431,6 +431,7 @@ class VisualizationsController < ApplicationController
 
     if field_count[NUMBER_TYPE] > 0 and format_data.count > 1
       visualizations.push 'Scatter'
+      visualizations.push 'Machine Learning'
     end
 
     if format_data.count > 0

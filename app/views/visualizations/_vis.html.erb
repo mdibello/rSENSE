@@ -12,6 +12,8 @@
                    'Timeline_light': "<%= path_to_image('vis_timeline_light.png')%>",
                    'Scatter_dark': "<%= path_to_image('vis_scatter_dark.png')%>",
                    'Scatter_light': "<%= path_to_image('vis_scatter_light.png')%>",
+                   'MachineLearning_dark': "<%= path_to_image('vis_scatter_dark.png')%>",
+                   'MachineLearning_light': "<%= path_to_image('vis_scatter_light.png')%>",
                    'Bar_dark': "<%= path_to_image('vis_bar_dark.png')%>",
                    'Bar_light': "<%= path_to_image('vis_bar_light.png')%>",
                    'Box_dark': "<%= path_to_image('vis_box_dark.png')%>",
@@ -30,6 +32,7 @@
                    'novis_map': "<%= path_to_image('novis_map.png')%>",
                    'novis_timeline': "<%= path_to_image('novis_timeline.png')%>",
                    'novis_scatter': "<%= path_to_image('novis_scatter.png')%>",
+                   'novis_machinelearning': "<%= path_to_image('novis_scatter.png')%>",
                    'novis_bar': "<%= path_to_image('novis_bar.png')%>",
                    'novis_box': "<%= path_to_image('novis_box.png')%>",
                    'novis_histogram': "<%= path_to_image('novis_histogram.png')%>",
@@ -163,6 +166,10 @@
       <div role="tabpanel" id="scatter-canvas"
            class="vis-canvas tab-pane fade
                   <% if default == 'Scatter' %> active in <% end %>">
+      </div>
+      <div role="tabpanel" id="machinelearning-canvas"
+           class="vis-canvas tab-pane fade
+                  <% if default == 'Machine Learning' %> active in <% end %>">
       </div>
       <div role="tabpanel" id="bar-canvas"
            class="vis-canvas tab-pane fade

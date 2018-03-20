@@ -57,6 +57,18 @@ $ ->
           Cannot display Scatter Chart visualization
         </div>
         """
+      machinelearning_err =
+        """
+        <div class='novis_message'>
+          <img src='#{window.icons["novis_scatter"]}'>
+          <br>
+          <br>
+          Either two numeric fields were not found or there were not
+          enough data
+          <br>
+          Cannot display Machine Learning Chart visualization
+        </div>
+        """
       histogram_err =
         """
         <div class='novis_message'>
@@ -146,6 +158,8 @@ $ ->
             $('#' + @canvas).html("<div id='vis_disabled'>#{time_err}</div>")
           when "scatter-canvas"
             $('#' + @canvas).html("<div id='vis_disabled'>#{scatter_err}</div>")
+          when "machinelearning-canvas"
+            $('#' + @canvas).html("<div id='vis_disabled'>#{machinelearning_err}</div>")
           when "photos-canvas"
             $('#' + @canvas).html("<div id='vis_disabled'>#{photos_err}</div>")
           when "pie-canvas"

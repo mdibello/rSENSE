@@ -86,7 +86,8 @@
         <div>
           <%= f.select(:default_vis,
             options_for_select([["None", "none"],["Map","Map"],["Timeline","Timeline"],["Scatter","Scatter"],
-                                ["Bar","Bar"],["Histogram","Histogram"],["Box","Box"],["Summary","Summary"],["Table","Table"],["Photos","Photos"]],
+                                ["Machine Learning","Machine Learning"],["Bar","Bar"],["Histogram","Histogram"],
+                                ["Box","Box"],["Summary","Summary"],["Table","Table"],["Photos","Photos"]],
               (@project.default_vis.nil? ? "none" : @project.default_vis)),{},{class: "form-control"}) %>
         </div>
         <span class="help-block">Sets the default visualization for the project when visualizing

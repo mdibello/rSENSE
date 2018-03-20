@@ -27,3 +27,4 @@
 //= require ./table
 //= require ./summary
 //= require ./photos
+//= require ./machineLearning
