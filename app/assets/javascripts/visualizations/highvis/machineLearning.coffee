@@ -43,6 +43,18 @@ $ ->
       update: ->
         super()
 
+      drawMachineLearningControls: ->
+        inctx = {}
+        outctx = {}
+        outctx.id = 'machinelearning-ctrls'
+        outctx.title = 'Machine Learning'
+        outctx.body = HandlebarsTemplates[hbCtrl('machinelearning')](inctx)
+        machinelearning = HandlebarsTemplates[hbCtrl('body')](outctx)
+        $('#vis-ctrls').append(machinelearning)
+
+        globals.configs.machineLearningOpen ?= false
+        initCtrlPanel('machinelearning-ctrls', 'machinelearningOpen')
+
       saveFilters: (vis = 'machinelearning') ->
         super(vis)
 

@@ -272,6 +272,8 @@ $ ->
         @drawYAxisControls(globals.configs.fieldSelection,
           data.normalFields.slice(1), false)
         @drawToolControls()
+        if @canvas == 'machinelearning-canvas'
+          @drawMachineLearningControls()
         @drawClippingControls()
         @drawRegressionControls()
         @drawSaveControls()
@@ -524,7 +526,7 @@ $ ->
         tools = HandlebarsTemplates[hbCtrl('body')](outctx)
 
         $('#vis-ctrls').append tools
-        
+
         # Set the correct options for period:
         $('#period-list').val(globals.configs.periodMode)
 

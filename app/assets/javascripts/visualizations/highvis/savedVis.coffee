@@ -129,7 +129,7 @@ $ ->
 
       # Grab the vis specific configs
       for visName in data.allVis
-        vis  = eval "globals.#{visName.toLowerCase()}"
+        vis  = eval "globals.#{visName.toLowerCase().replace(' ', '')}"
         if vis?
           vis.serializationCleanup()
           savedConfig[visName] = vis.configs

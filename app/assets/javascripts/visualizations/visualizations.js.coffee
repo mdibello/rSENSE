@@ -141,7 +141,7 @@ $ ->
 
       # Restore vis specific configs
       for visName in data.allVis
-        vis  = eval "globals.#{visName.toLowerCase()}"
+        vis  = eval "globals.#{visName.toLowerCase().replace(' ', '')}"
         if vis? and savedGlobals[visName]?
           $.extend(vis.configs, savedGlobals[visName])
           
