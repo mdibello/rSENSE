@@ -41,7 +41,41 @@ $ ->
         super(animate)
 
       update: ->
+        numCenters = 14
+        simplifiedData = []
+        console.log(data)
+        console.log(data.dataPoints.length)
+        # simplifiedData = data.dataPoints.map((x) -> x.slice(6, data.dataPoints[0].length))
+        for i in [0...data.dataPoints.length]
+          simplifiedData[i] = data.dataPoints[i].slice(6, data.dataPoints[i].length)
+          #console.log(simplifiedData[i])
+          for j in [0...simplifiedData[i].length]
+            if typeof simplifiedData[i][j] == 'string'
+              # console.log(simplifiedData[i][j])
+              # console.log(hashString(simplifiedData[i][j]))
+              simplifiedData[i][j] = hashString(simplifiedData[i][j])
+        console.log(simplifiedData)
+        clustering = ML.KMeans(simplifiedData, numCenters, {initialization: simplifiedData.slice(0, numCenters)})
+        console.log(clustering)
+
+        data.clustering = clustering
+
+        data.groups = []
+        data.groupSelection = []
+        for i in [0...numCenters]
+          data.groups.push "Cluster #{i+1}"
+          data.groupSelection.push i
+        for i in [0...data.dataPoints.length]
+          data.dataPoints[i][1] = data.groups[clustering.clusters[i]]
+
+        console.log(data)
+
         super()
+        console.log(@chart)
+
+        for i in [0...@chart.series.length]
+          @chart.series[i].color = globals.getColor(0)
+
 
       drawMachineLearningControls: ->
         inctx = {}
@@ -57,6 +91,9 @@ $ ->
 
       saveFilters: (vis = 'machinelearning') ->
         super(vis)
+
+      kmeansClustering: ->
+        console.log("Welcome to the world of ML")
 
     if 'Machine Learning' in data.relVis
       globals.machinelearning = new MachineLearning 'machinelearning-canvas'

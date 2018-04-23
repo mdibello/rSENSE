@@ -35,6 +35,7 @@
 //= require bootstrap-switch
 //= require jstz/jstz-1.0.4.min.js
 //= require mdl/material.min.js
+//= require ml/dist/ml.js
 //
 //  -- Handlebars --
 //= require handlebars

@@ -353,6 +353,16 @@ $ ->
             if elt.callout
               elt.enabled = false
 
+        #if @canvas == 'machinelearning-canvas'
+        #  groups = []
+        #  groupSel = []
+        #  for i in [0...data.clustering.centroids.length]
+        #    groups.push "Cluster #{i}"
+        #    groupSel.push i
+        #else
+        #  groups = data.groups
+        #  groupSel = data.groupSelection
+
         # Draw series
         fs = globals.configs.fieldSelection
         for fi, si in data.normalFields when fi in fs
@@ -391,7 +401,7 @@ $ ->
             mode = @configs.mode
             if dat.length < 2 and @configs.mode is @LINES_MODE
               mode = @SYMBOLS_LINES_MODE
-            
+
             # loop through all the series and add them to the chart
             for series in datArray
               options =
