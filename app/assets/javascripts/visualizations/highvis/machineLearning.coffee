@@ -35,13 +35,21 @@ $ ->
       Initialize constants for machine learning display mode
       ###
       constructor: (@canvas) ->
+
         @numClusters = 3
+        
+        data.dataPointsBackup = []
+        data.groupsBackup = []
+        data.groupSelectionBackup = []
+
         super(@canvas)
 
       start: (animate = true) ->
         super(animate)
 
       update: ->
+
+        console.log(@canvas)
 
         newNumClusters = parseInt($('#ml-num-clusters').val())
 
@@ -70,6 +78,13 @@ $ ->
 
         data.clustering = clustering
 
+        if data.groupsBackup.length == 0
+          data.groupsBackup = data.groups
+        if data.groupSelectionBackup.length == 0
+          data.groupSelectionBackup = data.groupSelection
+        if data.dataPointsBackup.length == 0
+          data.dataPointsBackup = data.dataPoints
+
         data.groups = []
         data.groupSelection = []
         for i in [0...@numClusters]
@@ -85,6 +100,10 @@ $ ->
 
         for i in [0...@chart.series.length]
           @chart.series[i].color = globals.getColor(0)
+
+        #data.groups = data.groupsBackup
+        #data.groupSelection = data.groupSelectionBackup
+        #data.dataPoints = data.dataPointsBackup
 
 
       drawMachineLearningControls: ->

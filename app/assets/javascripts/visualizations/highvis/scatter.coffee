@@ -285,6 +285,18 @@ $ ->
       ###
       update: () ->
         # Remove all series and draw legend
+
+        if @canvas != 'machinelearning-canvas'
+          if data.groupsBackup != undefined && data.groupsBackup.length > 0
+            data.groups = data.groupsBackup
+            data.groupsBackup = []
+          if data.groupSelectionBackup != undefined && data.groupSelectionBackup.length > 0
+            data.groupSelection = data.groupSelectionBackup
+            data.groupSelectionBackup = []
+          if data.dataPointsBackup != undefined && data.dataPointsBackup.length > 0
+            data.dataPoints = data.dataPointsBackup
+            data.dataPointsBackup = []
+
         super()
 
         @configs.xAxisId = data.fields[@configs.xAxis].fieldID
